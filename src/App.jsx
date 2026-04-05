@@ -1,5 +1,9 @@
 import { useState, useRef } from "react";
 
+const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
+const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_KEY;
+
+
 const FLORAL = "https://raw.githubusercontent.com/RichGirlHabits/rich-girl-habits/main/public/7EA228FB-BB36-4BE9-829D-C86EAAE98B1F.png";
 
 const BRAND = {
