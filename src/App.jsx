@@ -1,4 +1,4 @@
-const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_KEY;
+const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_URL;
 import { useState, useRef } from "react";
 
 const BRAND = {
