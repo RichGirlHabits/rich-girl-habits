@@ -1,6 +1,6 @@
 const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
 const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_KEY;
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const BRAND = {
   bg: "#0A0500",
@@ -64,7 +64,7 @@ export default function App() {
   const [saved, setSaved] = useState(false);
   const [reaction, setReaction] = useState("");
   const [recording, setRecording] = useState(false);
-  const [cutTo, setCutTo] = useState(4);
+  cconst [screen, setScreen] = useState("welcome");
   const [expenses, setExpenses] = useState(EXPENSES);
   const recRef = useRef();
   const nextId = useRef(200);
@@ -133,7 +133,18 @@ export default function App() {
     { id:"history", emoji:"📋", label:"History" },
   ];
 
-  return (
+  if (screen === "welcome") return (
+  <div style={{ minHeight:"100vh", background:"#0A0500", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"40px 24px", fontFamily:"'Nunito',sans-serif", textAlign:"center" }}>
+    <div style={{ fontSize:80, marginBottom:20, animation:"float 2s ease-in-out infinite" }}>💅</div>
+    <h1 style={{ fontSize:36, fontWeight:300, fontFamily:"'Fraunces',serif", fontStyle:"italic", color:"#E8956A", marginBottom:10 }}>Rich Girl Habits</h1>
+    <p style={{ fontSize:14, color:"rgba(253,240,232,0.5)", marginBottom:6 }}>A RetireRicher product</p>
+    <p style={{ fontSize:16, color:"rgba(253,240,232,0.7)", fontStyle:"italic", marginBottom:40, lineHeight:1.6 }}>"Your future self wants you to."</p>
+    <button onClick={()=>setScreen("home")} style={{ width:"100%", maxWidth:320, padding:"18px", background:"#E8956A", border:"none", borderRadius:16, color:"#0A0500", fontSize:16, fontWeight:800, cursor:"pointer", marginBottom:16 }}>
+      Get Started 💅
+    </button>
+    <p style={{ fontSize:12, color:"rgba(253,240,232,0.3)", fontStyle:"italic" }}>"For when you have more month than money."</p>
+  </div>
+); return (
     <div style={{ minHeight:"100vh", background:W.bg, fontFamily:"'Nunito',sans-serif", color:W.cream, maxWidth:430, margin:"0 auto" }}>
       <style>{CSS}</style>
       <div style={{ padding:"44px 20px 14px", display:"flex", justifyContent:"space-between", alignItems:"flex-end" }}>
