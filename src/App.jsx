@@ -1,4 +1,6 @@
-const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_URL;
+const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
+const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_KEY;
+
 import { useState, useRef } from "react";
 
 const BRAND = {
@@ -42,9 +44,6 @@ const EXPENSES = [
 const PERSONA = { name:"Nana Rose", emoji:"👵", color:"#F4A9B8" };
 const TOTAL_SAVED = 4847;
 const MONTH = "2026-04";
-
-const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
-const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_KEY;
 
 function compound(weekly, years, rate=0.07) {
   const weeks = years * 52;
