@@ -293,19 +293,24 @@ function Onboarding({onComplete}){
       <button onClick={next} style={btn({marginBottom:12,fontSize:22,padding:"18px"})}>Let's build wealth →</button>
       <p style={{fontSize:13,color:"#8B4513",fontWeight:600}}>A RetireRicher product</p>
     </div>,
-    // 1 knowledge level
+    // 1 money habits
     <div key={1} style={{minHeight:"100vh",background:W.bg,display:"flex",flexDirection:"column",justifyContent:"center",padding:"40px 24px"}}>
-      <h2 style={{fontSize:28,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.cream,marginBottom:8,textAlign:"center"}}>Where are you with money right now?</h2>
-      <p style={{fontSize:14,color:W.mid,marginBottom:32,lineHeight:1.6,textAlign:"center"}}>Be honest — this helps us personalize your experience</p>
+      <h2 style={{fontSize:28,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.cream,marginBottom:8,textAlign:"center"}}>Tell me about your money habits</h2>
+      <p style={{fontSize:14,color:W.mid,marginBottom:32,lineHeight:1.6,textAlign:"center"}}>Pick the one that sounds most like you</p>
       {[
-        {label:"I'm just getting started",desc:"I don't really have a system yet",genius:false},
-        {label:"I know the basics",desc:"I budget sometimes but want to do better",genius:false},
-        {label:"I'm pretty consistent",desc:"I save regularly but want to grow",genius:false},
-        {label:"I'm a financial genius",desc:"I've got this — just want to track habits",genius:true},
+        {emoji:"💸",label:"I spend first, save later",desc:"Whatever's left at the end of the month... if there's anything left",genius:false},
+        {emoji:"📊",label:"I track but I'm inconsistent",desc:"I start strong then fall off. I know what I should do, I just don't do it",genius:false},
+        {emoji:"🌱",label:"I'm building good habits",desc:"I'm getting there. I save regularly but want to do more",genius:false},
+        {emoji:"💎",label:"I've got this",desc:"My habits are solid. I just want to track and grow",genius:true},
       ].map((opt,i)=>(
         <button key={i} onClick={()=>{if(opt.genius){setIsGenius(true);setScreen(3);}else{setIsGenius(false);next();}}} style={{width:"100%",padding:"16px 18px",background:W.card,border:`1.5px solid ${W.border}`,borderRadius:14,marginBottom:10,cursor:"pointer",textAlign:"left",fontFamily:"'Nunito',sans-serif",transition:"all 0.2s"}}>
-          <p style={{fontSize:15,fontWeight:700,color:W.cream,marginBottom:3}}>{opt.label}</p>
-          <p style={{fontSize:12,color:W.soft}}>{opt.desc}</p>
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
+            <span style={{fontSize:28,flexShrink:0}}>{opt.emoji}</span>
+            <div>
+              <p style={{fontSize:15,fontWeight:700,color:W.cream,marginBottom:3}}>{opt.label}</p>
+              <p style={{fontSize:12,color:W.soft}}>{opt.desc}</p>
+            </div>
+          </div>
         </button>
       ))}
     </div>,
