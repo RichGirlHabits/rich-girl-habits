@@ -45,7 +45,7 @@ const PERSONAS = [
     walkaway:()=>"You walked away. That's not small. That's everything.",
     badge:()=>"This badge means you're becoming someone different. Keep going.",
   },
-  { id:"hype",     name:"Hype Beast",  emoji:"🔥", color:"#E8956A",
+  { id:"hype",     name:"Your Bestie", emoji:"⭐", color:"#E8956A",
     react:(s,a)=>`OKAY $${a} at ${s}?! WE LOGGING IT!! IN THIS ECONOMY!! LET'S GO!!`,
     save:()=>"LOGGED!! YOU ARE BUILT DIFFERENT!! 🔥🔥🔥",
     resist:(s)=>`WALK AWAY FROM ${s.toUpperCase()}!! YOUR ROTH IRA IS CALLING!! 🏆`,
@@ -266,6 +266,8 @@ function Onboarding({onComplete}){
   const [accounts,setAccounts]=useState([]);
   const [zip,setZip]=useState("");
   const [isGenius,setIsGenius]=useState(false);
+  const [weeklyCommitment,setWeeklyCommitment]=useState(null);
+  const [habitLabel,setHabitLabel]=useState("");
   const [showConfetti,setShowConfetti]=useState(false);
 
   const GOAL_OPTIONS=[
@@ -303,7 +305,7 @@ function Onboarding({onComplete}){
         {emoji:"🌱",label:"I'm building good habits",desc:"I'm getting there. I save regularly but want to do more",genius:false},
         {emoji:"💎",label:"I've got this",desc:"My habits are solid. I just want to track and grow",genius:true},
       ].map((opt,i)=>(
-        <button key={i} onClick={()=>{if(opt.genius){setIsGenius(true);setScreen(3);}else{setIsGenius(false);next();}}} style={{width:"100%",padding:"16px 18px",background:W.card,border:`1.5px solid ${W.border}`,borderRadius:14,marginBottom:10,cursor:"pointer",textAlign:"left",fontFamily:"'Nunito',sans-serif",transition:"all 0.2s"}}>
+        <button key={i} onClick={()=>{setHabitLabel(opt.label);if(opt.genius){setIsGenius(true);setScreen(3);}else{setIsGenius(false);next();}}} style={{width:"100%",padding:"16px 18px",background:W.card,border:`1.5px solid ${W.border}`,borderRadius:14,marginBottom:10,cursor:"pointer",textAlign:"left",fontFamily:"'Nunito',sans-serif",transition:"all 0.2s"}}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <span style={{fontSize:28,flexShrink:0}}>{opt.emoji}</span>
             <div>
@@ -338,35 +340,56 @@ function Onboarding({onComplete}){
       ))}
       <button onClick={next} disabled={!name} style={btn({opacity:name?1:0.4,marginTop:8})}>Continue →</button>
     </div>,
-    // 4 goals
+    // 4 goals + amounts
     <div key={4} style={{minHeight:"100vh",background:W.bg,padding:"60px 24px 100px",fontFamily:"'Nunito',sans-serif"}}>
       <h2 style={{fontSize:28,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.cream,marginBottom:8}}>What are you saving for?</h2>
-      <p style={{fontSize:13,color:W.soft,marginBottom:24}}>Select all that apply</p>
+      <p style={{fontSize:13,color:W.soft,marginBottom:24}}>Select your goals and target amounts</p>
       {GOAL_OPTIONS.map(g=>{
         const sel=selectedGoals.includes(g.id);
-        return(<button key={g.id} onClick={()=>setSelectedGoals(p=>sel?p.filter(x=>x!==g.id):[...p,g.id])} style={{width:"100%",padding:"14px 16px",background:sel?W.aLight:"rgba(255,255,255,0.03)",border:`1.5px solid ${sel?W.accent:W.border}`,borderRadius:14,color:sel?W.cream:W.mid,cursor:"pointer",marginBottom:8,display:"flex",alignItems:"center",gap:12,fontFamily:"'Nunito',sans-serif",transition:"all 0.2s"}}>
-          <span style={{fontSize:22}}>{g.emoji}</span>
-          <div style={{textAlign:"left"}}><p style={{fontSize:14,fontWeight:700}}>{g.label}</p><p style={{fontSize:11,color:W.soft}}>Goal: ${g.amount.toLocaleString()}</p></div>
-          {sel&&<span style={{marginLeft:"auto",color:W.accent}}>✓</span>}
-        </button>);
+        const PRESETS={emergency:[1000,2000,5000],debt:[2000,5000,10000],vacation:[1500,3000,5000],home:[10000,20000,50000],roth:[3500,7000],wedding:[5000,15000,25000],kids:[5000,10000,20000]};
+        const presets=PRESETS[g.id]||[1000,5000,10000];
+        return(
+          <div key={g.id} style={{marginBottom:10}}>
+            <button onClick={()=>setSelectedGoals(p=>sel?p.filter(x=>x!==g.id):[...p,g.id])} style={{width:"100%",padding:"14px 16px",background:sel?W.aLight:"rgba(255,255,255,0.03)",border:`1.5px solid ${sel?W.accent:W.border}`,borderRadius:14,color:sel?W.cream:W.mid,cursor:"pointer",display:"flex",alignItems:"center",gap:12,fontFamily:"'Nunito',sans-serif",transition:"all 0.2s"}}>
+              <span style={{fontSize:22}}>{g.emoji}</span>
+              <div style={{textAlign:"left",flex:1}}><p style={{fontSize:14,fontWeight:700}}>{g.label}</p></div>
+              {sel&&<span style={{color:W.accent,fontSize:18}}>✓</span>}
+            </button>
+            {sel&&(
+              <div style={{padding:"10px 14px",background:"rgba(255,255,255,0.02)",borderRadius:"0 0 14px 14px",border:`1px solid ${W.border}`,borderTop:"none",marginTop:-2}}>
+                <p style={{fontSize:11,color:W.soft,marginBottom:8}}>Target amount:</p>
+                <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                  {presets.map(p=>(
+                    <button key={p} style={{padding:"6px 12px",background:W.aLight,border:`1px solid ${W.border}`,borderRadius:99,fontSize:12,color:W.cream,fontWeight:700,cursor:"pointer",fontFamily:"'Nunito',sans-serif"}}>${p.toLocaleString()}</button>
+                  ))}
+                  <button style={{padding:"6px 12px",background:"transparent",border:`1px dashed ${W.border}`,borderRadius:99,fontSize:12,color:W.soft,cursor:"pointer",fontFamily:"'Nunito',sans-serif"}}>Custom</button>
+                </div>
+              </div>
+            )}
+          </div>
+        );
       })}
       <button onClick={next} disabled={selectedGoals.length===0} style={btn({opacity:selectedGoals.length>0?1:0.4,marginTop:8})}>Continue →</button>
     </div>,
-    // 5 amounts
+    // 5 weekly savings - selectable
     <div key={5} style={{minHeight:"100vh",background:W.bg,padding:"60px 24px 100px",fontFamily:"'Nunito',sans-serif"}}>
       <h2 style={{fontSize:24,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.cream,marginBottom:8}}>How much can you save weekly?</h2>
-      <p style={{fontSize:13,color:W.soft,marginBottom:24}}>Even $10/week adds up fast</p>
-      {[10,25,50,100].map(amt=>{const y5=compound(amt,5);return(
-        <div key={amt} style={{background:W.card,border:`1px solid ${W.border}`,borderRadius:18,padding:18,marginBottom:10,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <div><p style={{fontSize:16,fontWeight:800,color:W.accent}}>${amt}/week</p><p style={{fontSize:11,color:W.soft}}>${(amt*52).toLocaleString()}/year</p></div>
-          <div style={{textAlign:"right"}}><p style={{fontSize:14,fontWeight:700,color:"#6EE7B7"}}>{formatK(y5)} in 5 years</p><p style={{fontSize:11,color:W.soft}}>at 7% return</p></div>
-        </div>
-      );})}
-      <div style={{background:"rgba(232,149,106,0.08)",border:`1px solid ${W.border}`,borderRadius:18,padding:18,marginTop:12,marginBottom:20,textAlign:"center"}}>
+      <p style={{fontSize:13,color:W.soft,marginBottom:24}}>Tap to select — even $10/week adds up fast</p>
+      {[10,25,50,100].map(amt=>{
+        const y5=compound(amt,5);
+        const sel=weeklyCommitment===amt;
+        return(
+          <button key={amt} onClick={()=>setWeeklyCommitment(amt)} style={{width:"100%",padding:"16px 18px",background:sel?W.aLight:"rgba(255,255,255,0.03)",border:`1.5px solid ${sel?W.accent:W.border}`,borderRadius:14,marginBottom:10,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",fontFamily:"'Nunito',sans-serif",transition:"all 0.2s"}}>
+            <div style={{textAlign:"left"}}><p style={{fontSize:16,fontWeight:800,color:sel?W.cream:W.accent}}>${amt}/week</p><p style={{fontSize:11,color:W.soft}}>${(amt*52).toLocaleString()}/year</p></div>
+            <div style={{textAlign:"right"}}><p style={{fontSize:14,fontWeight:700,color:"#6EE7B7"}}>{formatK(y5)} in 5 years</p><p style={{fontSize:11,color:W.soft}}>at 7% return</p></div>
+          </button>
+        );
+      })}
+      <div style={{background:"rgba(232,149,106,0.08)",border:`1px solid ${W.border}`,borderRadius:18,padding:18,marginTop:4,marginBottom:20,textAlign:"center"}}>
         <Sparkle size={16}/>
         <p style={{fontSize:12,color:W.mid,marginTop:8,lineHeight:1.6}}><strong style={{color:W.accent}}>$10/week</strong> from cutting one coffee visit becomes <strong style={{color:"#6EE7B7"}}>{formatK(compound(10,30))}</strong> in 30 years.</p>
       </div>
-      <button onClick={next} style={btn()}>That's powerful →</button>
+      <button onClick={next} disabled={!weeklyCommitment} style={btn({opacity:weeklyCommitment?1:0.4})}>That's powerful →</button>
     </div>,
     // 6 situation
     <div key={6} style={{minHeight:"100vh",background:W.bg,padding:"60px 24px 100px",fontFamily:"'Nunito',sans-serif"}}>
@@ -377,25 +400,11 @@ function Onboarding({onComplete}){
         return(<button key={a} onClick={()=>setAccounts(p=>sel?p.filter(x=>x!==a):[...p,a])} style={{width:"100%",padding:"14px",background:sel?W.aLight:"rgba(255,255,255,0.03)",border:`1.5px solid ${sel?W.accent:W.border}`,borderRadius:12,color:sel?W.cream:W.mid,cursor:"pointer",marginBottom:8,textAlign:"left",fontFamily:"'Nunito',sans-serif",fontSize:13,fontWeight:sel?700:400,transition:"all 0.2s"}}>{sel?"✓  ":""}{a}</button>);
       })}
       {accounts.length>0&&<div style={{background:"rgba(232,149,106,0.06)",border:`1px solid ${W.border}`,borderRadius:18,padding:18,marginTop:8,marginBottom:16,display:"flex",gap:10,alignItems:"flex-start"}}><span style={{fontSize:20}}>🌱</span><div><p style={{fontSize:11,fontWeight:800,color:W.accent,marginBottom:3}}>RETIREDRICHER</p><p style={{fontSize:12,color:W.mid,lineHeight:1.6,fontStyle:"italic"}}>"You already have something to build on. That matters more than most people realize."</p></div></div>}
-      <button onClick={next} style={btn()}>Continue →</button>
+      <p style={{fontSize:11,color:W.soft,marginTop:12,lineHeight:1.6,textAlign:"center",fontStyle:"italic"}}>Tracking with others? You can add household members from your Home screen settings.</p>
+      <button onClick={next} style={btn({marginTop:16})}>Continue →</button>
     </div>,
-    // 7 future self
+    // 7 persona
     <div key={7} style={{minHeight:"100vh",background:W.bg,padding:"60px 24px 100px",fontFamily:"'Nunito',sans-serif"}}>
-      <h2 style={{fontSize:24,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.cream,marginBottom:8}}>Meet your Future Self</h2>
-      <p style={{fontSize:13,color:W.soft,marginBottom:24,lineHeight:1.6}}>She appears at milestones to remind you why you started.</p>
-      <div style={{background:W.card,border:`1px solid ${W.border}`,borderRadius:18,padding:"32px 20px",marginBottom:20,textAlign:"center"}}>
-        <div style={{width:80,height:80,borderRadius:"50%",background:"linear-gradient(135deg,#C4965A,#E8A87C)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:36,margin:"0 auto 16px"}}>🌅</div>
-        <p style={{fontSize:14,color:W.mid,marginBottom:8}}>Photo upload coming soon</p>
-        <p style={{fontSize:12,color:W.soft}}>Your Future Self will speak to you in text at every milestone</p>
-      </div>
-      <div style={{marginBottom:20}}>
-        <p style={{fontSize:11,color:W.soft,letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Your ZIP Code</p>
-        <input value={zip} onChange={e=>setZip(e.target.value)} placeholder="For local cost of living insights" style={{width:"100%",padding:"14px",background:"rgba(255,255,255,0.05)",border:`1px solid ${W.border}`,borderRadius:12,color:W.cream,fontSize:14,outline:"none"}}/>
-      </div>
-      <button onClick={next} style={btn()}>Continue →</button>
-    </div>,
-    // 8 persona
-    <div key={8} style={{minHeight:"100vh",background:W.bg,padding:"60px 24px 100px",fontFamily:"'Nunito',sans-serif"}}>
       <h2 style={{fontSize:24,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.cream,marginBottom:8}}>Choose Your Energy</h2>
       <p style={{fontSize:13,color:W.soft,marginBottom:24}}>Who do you want in your corner?</p>
       {PERSONAS.map(p=>{
@@ -408,38 +417,54 @@ function Onboarding({onComplete}){
       })}
       <button onClick={next} disabled={!selectedPersona} style={btn({opacity:selectedPersona?1:0.4,marginTop:8})}>This is my energy →</button>
     </div>,
-    // 9 household
-    <div key={9} style={{minHeight:"100vh",background:W.bg,padding:"60px 24px 100px",fontFamily:"'Nunito',sans-serif"}}>
-      <h2 style={{fontSize:24,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.cream,marginBottom:8}}>Who's tracking with you?</h2>
-      <p style={{fontSize:13,color:W.soft,marginBottom:24}}>Up to 3 members free</p>
-      {members.map((m,i)=>(
-        <div key={i} style={{background:W.card,border:`1px solid ${W.border}`,borderRadius:18,padding:18,display:"flex",alignItems:"center",gap:12,marginBottom:10}}>
-          <button onClick={()=>{const e=["👩","👨","👧","👦","🧑","👩‍💼","🧔","👱‍♀️"];setMembers(p=>{const n=[...p];n[i]={...n[i],emoji:e[(e.indexOf(n[i].emoji)+1)%e.length]};return n;})}} style={{fontSize:28,background:"none",border:"none",cursor:"pointer",padding:0}}>{m.emoji}</button>
-          <input value={m.name} onChange={e=>setMembers(p=>{const n=[...p];n[i]={...n[i],name:e.target.value};return n;})} style={{flex:1,padding:"10px",background:"rgba(255,255,255,0.05)",border:`1px solid ${W.border}`,borderRadius:10,color:W.cream,fontSize:14,outline:"none"}}/>
-          {members.length>1&&<button onClick={()=>setMembers(p=>p.filter((_,j)=>j!==i))} style={{background:"none",border:"none",color:W.soft,cursor:"pointer",fontSize:18}}>×</button>}
-        </div>
-      ))}
-      {members.length<3&&<button onClick={()=>setMembers(p=>[...p,{name:"",emoji:"🧑"}])} style={{width:"100%",padding:"12px",background:"transparent",border:`1px dashed ${W.border}`,borderRadius:12,color:W.soft,fontSize:13,cursor:"pointer",marginBottom:16}}>+ Add household member</button>}
-      <button onClick={next} style={btn({marginTop:8})}>Continue →</button>
-    </div>,
-    // 10 final
-    <div key={10} style={{minHeight:"100vh",background:W.bg,padding:"60px 24px 100px",fontFamily:"'Nunito',sans-serif",textAlign:"center"}}>
+    // 8 welcome — personalized
+    <div key={8} style={{minHeight:"100vh",background:W.bg,padding:"60px 24px 100px",fontFamily:"'Nunito',sans-serif",textAlign:"center"}}>
       <Confetti active={true}/>
-      <div style={{fontSize:64,marginBottom:16,animation:"bounceIn 0.5s ease"}}>💅</div>
-      <h2 style={{fontSize:28,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.accent,marginBottom:8}}>Welcome, {name}.</h2>
+      <h2 style={{fontSize:32,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.accent,marginBottom:4}}>Welcome, {name}.</h2>
       <p style={{fontSize:14,color:W.mid,marginBottom:28,lineHeight:1.6,fontStyle:"italic"}}>"Your future self wants you to."</p>
-      <div style={{background:W.card,border:`1px solid ${W.border}`,borderRadius:18,padding:18,marginBottom:16,textAlign:"left"}}>
-        <p style={{fontSize:11,color:W.soft,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12}}>Your Setup</p>
-        <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}><span style={{fontSize:13,color:W.mid}}>Coach</span><span style={{fontSize:13,fontWeight:700}}>{selectedPersona?.emoji} {selectedPersona?.name}</span></div>
-        <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}><span style={{fontSize:13,color:W.mid}}>Goals</span><span style={{fontSize:13,fontWeight:700}}>{selectedGoals.length} selected</span></div>
-        <div style={{display:"flex",justifyContent:"space-between"}}><span style={{fontSize:13,color:W.mid}}>Household</span><span style={{fontSize:13,fontWeight:700}}>{members.length} member{members.length>1?"s":""}</span></div>
+      <div style={{background:W.card,border:`1px solid ${W.border}`,borderRadius:18,padding:18,marginBottom:14,textAlign:"left"}}>
+        <p style={{fontSize:11,color:W.soft,letterSpacing:1.5,textTransform:"uppercase",marginBottom:12}}>You said</p>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:`1px solid rgba(253,240,232,0.06)`}}><span style={{fontSize:13,color:W.mid}}>Money habit</span><span style={{fontSize:13,fontWeight:700,color:W.cream}}>{isGenius?"I've got this":habitLabel||"Building habits"}</span></div>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:`1px solid rgba(253,240,232,0.06)`}}><span style={{fontSize:13,color:W.mid}}>Goals</span><span style={{fontSize:13,fontWeight:700}}>{selectedGoals.length} selected</span></div>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:`1px solid rgba(253,240,232,0.06)`}}><span style={{fontSize:13,color:W.mid}}>Weekly commitment</span><span style={{fontSize:13,fontWeight:700,color:"#6EE7B7"}}>${weeklyCommitment||10}/week</span></div>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"8px 0"}}><span style={{fontSize:13,color:W.mid}}>Your coach</span><span style={{fontSize:13,fontWeight:700}}>{selectedPersona?.emoji} {selectedPersona?.name}</span></div>
       </div>
-      <div style={{background:"rgba(232,149,106,0.06)",border:`1px solid ${W.border}`,borderRadius:18,padding:18,marginBottom:20,display:"flex",gap:10,alignItems:"flex-start",textAlign:"left"}}>
+      <div style={{background:"rgba(232,149,106,0.06)",border:`1px solid ${W.border}`,borderRadius:18,padding:18,marginBottom:24,display:"flex",gap:10,alignItems:"flex-start",textAlign:"left"}}>
         <span style={{fontSize:20}}>🌱</span>
         <div><p style={{fontSize:11,fontWeight:800,color:W.accent,marginBottom:3}}>RETIREDRICHER</p><p style={{fontSize:12,color:W.mid,lineHeight:1.6,fontStyle:"italic"}}>"Know where you are. Know where you want to be. Close the gap. You just took the first step."</p></div>
       </div>
-      <button onClick={()=>onComplete({name,phone,email,goals:selectedGoals,persona:selectedPersona||PERSONAS[0],members,accounts,zip})} style={btn()}>Start building wealth 💅</button>
+      <button onClick={next} style={btn({fontSize:18,padding:"18px"})}>Let's log your first expense →</button>
+      <p style={{fontSize:11,color:W.soft,marginTop:10}}>We'll walk you through it together</p>
     </div>,
+    // 9 recording tutorial
+    <div key={9} style={{minHeight:"100vh",background:W.bg,padding:"60px 24px 100px",fontFamily:"'Nunito',sans-serif"}}>
+      <h2 style={{fontSize:24,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.cream,marginBottom:8}}>Let's log your first expense</h2>
+      <p style={{fontSize:13,color:W.soft,marginBottom:24,lineHeight:1.6}}>It takes 5 seconds. Here's how:</p>
+      {[
+        {step:"1",title:"Hold the mic button",desc:"Press and hold the orange button below",emoji:"🎙️"},
+        {step:"2",title:"Say your expense",desc:""I spent $38 at Starbucks for coffee"",emoji:"🗣️"},
+        {step:"3",title:"Confirm and save",desc:"We'll parse it automatically — just tap Save",emoji:"✓"},
+      ].map(s=>(
+        <div key={s.step} style={{background:W.card,border:`1px solid ${W.border}`,borderRadius:16,padding:"14px 16px",marginBottom:10,display:"flex",gap:14,alignItems:"center"}}>
+          <div style={{width:36,height:36,borderRadius:"50%",background:W.aLight,border:`1.5px solid ${W.accent}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:800,color:W.accent,flexShrink:0}}>{s.step}</div>
+          <div style={{flex:1}}>
+            <p style={{fontSize:14,fontWeight:700,color:W.cream,marginBottom:2}}>{s.title}</p>
+            <p style={{fontSize:12,color:W.soft,fontStyle:"italic"}}>{s.desc}</p>
+          </div>
+          <span style={{fontSize:22}}>{s.emoji}</span>
+        </div>
+      ))}
+      <div style={{background:"rgba(244,169,184,0.1)",border:"1px solid rgba(244,169,184,0.2)",borderRadius:14,padding:"14px 16px",marginTop:16,marginBottom:24,display:"flex",gap:10,alignItems:"flex-start"}}>
+        <span style={{fontSize:22,flexShrink:0}}>{selectedPersona?.emoji||"👵"}</span>
+        <div>
+          <p style={{fontSize:11,fontWeight:800,color:"#F4A9B8",marginBottom:3}}>{selectedPersona?.name||"Nana Rose"}</p>
+          <p style={{fontSize:13,color:W.mid,lineHeight:1.6}}>{"I'm right here with you. Just press and hold that button and tell me what you spent. We'll do it together!"}</p>
+        </div>
+      </div>
+      <button onClick={()=>onComplete({name,phone,email,goals:selectedGoals,persona:selectedPersona||PERSONAS[0],members,accounts,zip,weeklyCommitment:weeklyCommitment||10,habitLabel})} style={btn({fontSize:18,padding:"18px"})}>I'm ready — let's go →</button>
+    </div>,
+  ];
+
   ];
 
   return(
@@ -538,7 +563,7 @@ export default function App(){
   `;
 
   const card=(s={})=>({background:W.card,border:`1px solid ${W.border}`,borderRadius:18,padding:18,...s});
-  const NAV=[{id:"home",emoji:"💅",label:"Home"},{id:"record",emoji:"🎙️",label:"Record"},{id:"growth",emoji:"📈",label:"Growth"},{id:"history",emoji:"📋",label:"History"}];
+  const NAV=[{id:"home",emoji:"🏠",label:"Home"},{id:"record",emoji:"🎙️",label:"Record"},{id:"growth",emoji:"📈",label:"Growth"},{id:"history",emoji:"📋",label:"History"}];
 
   if(!onboarded) return(
     <><style>{CSS}</style>
@@ -566,7 +591,7 @@ export default function App(){
         <div style={{textAlign:"right"}}>
           <div style={{display:"flex",alignItems:"center",gap:5,justifyContent:"flex-end",marginBottom:2}}><span style={{fontSize:16}}>{persona.emoji}</span><span style={{fontSize:11,color:W.soft}}>{persona.name}</span></div>
           <p style={{fontSize:18,fontWeight:800,color:W.accent,fontFamily:"'Fraunces',serif"}}>${totalSaved.toLocaleString()}</p>
-          <p style={{fontSize:10,color:W.soft}}>total saved 💅</p>
+          <p style={{fontSize:10,color:W.soft}}>total saved ✨</p>
         </div>
       </div>
 
@@ -586,10 +611,10 @@ export default function App(){
           <div style={{...card({marginBottom:14})}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
               <div><p style={{fontSize:10,color:W.soft,marginBottom:3,textTransform:"uppercase",letterSpacing:1}}>Spent This Month</p><p style={{fontSize:32,fontWeight:800,fontFamily:"'Fraunces',serif"}}>${totalSpent.toFixed(0)}</p><p style={{fontSize:11,color:W.soft}}>of ${totalBudget} budget</p></div>
-              <div style={{textAlign:"right"}}><p style={{fontSize:10,color:W.soft,marginBottom:3,textTransform:"uppercase",letterSpacing:1}}>Total Saved</p><p style={{fontSize:24,fontWeight:800,color:W.accent}}>${totalSaved.toLocaleString()}</p><p style={{fontSize:11,color:W.soft}}>since day 1 💅</p></div>
+              <div style={{textAlign:"right"}}><p style={{fontSize:10,color:W.soft,marginBottom:3,textTransform:"uppercase",letterSpacing:1}}>Total Saved</p><p style={{fontSize:24,fontWeight:800,color:W.accent}}>${totalSaved.toLocaleString()}</p><p style={{fontSize:11,color:W.soft}}>since day 1 ✨</p></div>
             </div>
             <div style={{height:5,background:"rgba(253,240,232,0.08)",borderRadius:3}}><div style={{height:"100%",borderRadius:3,background:`linear-gradient(90deg,${W.rose},${W.accent})`,width:`${Math.min(totalSpent/totalBudget*100,100)}%`,transition:"width 0.6s ease"}}/></div>
-            {totalSpent===0&&<p style={{fontSize:11,color:W.soft,marginTop:8,fontStyle:"italic",textAlign:"center"}}>No expenses logged yet — tap Record to start 💅</p>}
+            {totalSpent===0&&<p style={{fontSize:11,color:W.soft,marginTop:8,fontStyle:"italic",textAlign:"center"}}>No expenses logged yet — tap Record to start</p>}
           </div>
 
           <div style={{...card({background:"rgba(239,68,68,0.06)",borderColor:"rgba(239,68,68,0.2)",marginBottom:14})}}>
@@ -621,7 +646,7 @@ export default function App(){
                 <div style={{textAlign:"right"}}><p style={{fontSize:16,fontWeight:800,color:g.color||W.accent}}>${g.saved.toLocaleString()}</p><p style={{fontSize:11,color:W.soft}}>of ${g.target.toLocaleString()}</p></div>
               </div>
               <div style={{height:5,background:"rgba(253,240,232,0.08)",borderRadius:3}}><div style={{height:"100%",borderRadius:3,background:g.color||W.accent,width:`${(g.saved/g.target)*100}%`,transition:"width 0.6s ease"}}/></div>
-              {g.saved===0&&<p style={{fontSize:11,color:W.soft,marginTop:6,fontStyle:"italic"}}>Start saving toward this goal 💅</p>}
+              {g.saved===0&&<p style={{fontSize:11,color:W.soft,marginTop:6,fontStyle:"italic"}}>Start saving toward this goal</p>}
             </div>
           ))}
 
@@ -666,7 +691,7 @@ export default function App(){
                   {userGoals.map(g=><div key={g.id} style={{padding:"5px 10px",background:W.aLight,border:`1px solid ${W.border}`,borderRadius:99,fontSize:11,color:W.cream,fontWeight:700,cursor:"pointer"}}>{g.emoji} {g.label.split(" ")[0]}</div>)}
                 </div>
               </div>
-              <button onClick={save} style={{width:"100%",padding:"15px",background:W.accent,border:"none",borderRadius:14,color:W.bg,fontSize:14,fontWeight:800,cursor:"pointer",marginTop:14}}>Save Expense 💅</button>
+              <button onClick={save} style={{width:"100%",padding:"15px",background:W.accent,border:"none",borderRadius:14,color:W.bg,fontSize:14,fontWeight:800,cursor:"pointer",marginTop:14}}>Save Expense →</button>
             </div>
           )}
         </div>
@@ -756,7 +781,7 @@ export default function App(){
               <p style={{fontSize:32,marginBottom:12}}>🎙️</p>
               <p style={{fontSize:14,fontWeight:700,color:W.mid,marginBottom:6}}>No expenses yet</p>
               <p style={{fontSize:12,color:W.soft,marginBottom:16}}>Tap Record to log your first expense</p>
-              <button onClick={()=>setTab("record")} style={{padding:"12px 24px",background:W.accent,border:"none",borderRadius:12,color:W.bg,fontSize:13,fontWeight:800,cursor:"pointer"}}>Start Recording 💅</button>
+              <button onClick={()=>setTab("record")} style={{padding:"12px 24px",background:W.accent,border:"none",borderRadius:12,color:W.bg,fontSize:13,fontWeight:800,cursor:"pointer"}}>Start Recording →</button>
             </div>
           ):expenses.slice(0,20).map(e=>(
             <div key={e.id} style={{...card({display:"flex",alignItems:"center",gap:12,padding:"12px 14px",marginBottom:8})}}>
