@@ -287,11 +287,11 @@ function Onboarding({onComplete}){
   const SCREENS=[
     // 0 splash
     <div key={0} style={{minHeight:"100vh",background:W.bg,backgroundImage:"url('/7EA228FB-BB36-4BE9-829D-C86EAAE98B1F.png')",backgroundSize:"cover",backgroundPosition:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
-      <h1 style={{fontSize:42,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.accent,marginBottom:12,lineHeight:1.1}}>Rich Girl Habits</h1>
-      <p style={{fontSize:16,color:W.mid,marginBottom:8,lineHeight:1.6,fontStyle:"italic",fontFamily:"'Fraunces',serif"}}>"Your future self wants you to."</p>
-      <p style={{fontSize:13,color:W.soft,marginBottom:48}}>"For when you have more month than money."</p>
+      <h1 style={{fontSize:42,fontWeight:700,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:"#8B4513",marginBottom:12,lineHeight:1.1}}>Rich Girl Habits</h1>
+      <p style={{fontSize:18,color:"#5C3317",marginBottom:8,lineHeight:1.6,fontStyle:"italic",fontFamily:"'Fraunces',serif",fontWeight:600}}>"Your future self wants you to."</p>
+      <p style={{fontSize:15,color:"#5C3317",marginBottom:48,fontWeight:600}}>"For when you have more month than money."</p>
       <button onClick={next} style={btn({marginBottom:12,fontSize:22,padding:"18px"})}>Let's build wealth →</button>
-      <p style={{fontSize:11,color:W.soft}}>A RetireRicher product</p>
+      <p style={{fontSize:13,color:"#8B4513",fontWeight:600}}>A RetireRicher product</p>
     </div>,
     // 1 genius?
     <div key={1} style={{minHeight:"100vh",background:W.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
