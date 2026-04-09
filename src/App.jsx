@@ -286,7 +286,7 @@ function Onboarding({onComplete}){
 
   const SCREENS=[
     // 0 splash
-    <div key={0} style={{minHeight:"100vh",background:W.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
+    <div key={0} style={{minHeight:"100vh",background:W.bg,backgroundImage:"url('/7EA228FB-BB36-4BE9-829D-C86EAAE98B1F.png')",backgroundSize:"cover",backgroundPosition:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
       <div style={{fontSize:64,marginBottom:20,animation:"float 2s ease-in-out infinite"}}>💅</div>
       <h1 style={{fontSize:42,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.accent,marginBottom:12,lineHeight:1.1}}>Rich Girl Habits</h1>
       <p style={{fontSize:16,color:W.mid,marginBottom:8,lineHeight:1.6,fontStyle:"italic",fontFamily:"'Fraunces',serif"}}>"Your future self wants you to."</p>
@@ -761,6 +761,6 @@ export default function App(){
           {NAV.map(n=><button key={n.id} onClick={()=>setTab(n.id)} style={{flex:1,padding:"9px 4px",borderRadius:10,border:"none",cursor:"pointer",fontSize:10,fontWeight:800,background:tab===n.id?W.accent:"transparent",color:tab===n.id?W.bg:W.soft,transition:"all 0.2s"}}><div style={{fontSize:16,marginBottom:2}}>{n.emoji}</div>{n.label}</button>)}
         </div>
       </div>
-   </div>
+    </div>
   );
 }
