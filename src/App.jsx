@@ -1,4 +1,4 @@
-Import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const W = {
   bg:"#0A0500", card:"rgba(255,245,235,0.06)", accent:"#E8956A",
