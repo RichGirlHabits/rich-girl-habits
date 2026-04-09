@@ -293,13 +293,21 @@ function Onboarding({onComplete}){
       <button onClick={next} style={btn({marginBottom:12,fontSize:22,padding:"18px"})}>Let's build wealth →</button>
       <p style={{fontSize:13,color:"#8B4513",fontWeight:600}}>A RetireRicher product</p>
     </div>,
-    // 1 genius?
-    <div key={1} style={{minHeight:"100vh",background:W.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center"}}>
-      <div style={{fontSize:52,marginBottom:20}}>🤔</div>
-      <h2 style={{fontSize:28,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.cream,marginBottom:12}}>Are you a financial genius?</h2>
-      <p style={{fontSize:14,color:W.mid,marginBottom:40,lineHeight:1.6}}>Do you already know what you're doing with money or do you want us to walk you through it?</p>
-      <button onClick={()=>{setIsGenius(true);setScreen(3);}} style={btn({marginBottom:12,background:"transparent",border:`1.5px solid ${W.border}`,color:W.mid})}>I got this — skip the basics 💅</button>
-      <button onClick={next} style={btn()}>Help me figure this out →</button>
+    // 1 knowledge level
+    <div key={1} style={{minHeight:"100vh",background:W.bg,display:"flex",flexDirection:"column",justifyContent:"center",padding:"40px 24px"}}>
+      <h2 style={{fontSize:28,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.cream,marginBottom:8,textAlign:"center"}}>Where are you with money right now?</h2>
+      <p style={{fontSize:14,color:W.mid,marginBottom:32,lineHeight:1.6,textAlign:"center"}}>Be honest — this helps us personalize your experience</p>
+      {[
+        {label:"I'm just getting started",desc:"I don't really have a system yet",genius:false},
+        {label:"I know the basics",desc:"I budget sometimes but want to do better",genius:false},
+        {label:"I'm pretty consistent",desc:"I save regularly but want to grow",genius:false},
+        {label:"I'm a financial genius",desc:"I've got this — just want to track habits",genius:true},
+      ].map((opt,i)=>(
+        <button key={i} onClick={()=>{if(opt.genius){setIsGenius(true);setScreen(3);}else{setIsGenius(false);next();}}} style={{width:"100%",padding:"16px 18px",background:W.card,border:`1.5px solid ${W.border}`,borderRadius:14,marginBottom:10,cursor:"pointer",textAlign:"left",fontFamily:"'Nunito',sans-serif",transition:"all 0.2s"}}>
+          <p style={{fontSize:15,fontWeight:700,color:W.cream,marginBottom:3}}>{opt.label}</p>
+          <p style={{fontSize:12,color:W.soft}}>{opt.desc}</p>
+        </button>
+      ))}
     </div>,
     // 2 explainer
     <div key={2} style={{minHeight:"100vh",background:W.bg,padding:"60px 24px 100px",fontFamily:"'Nunito',sans-serif"}}>
