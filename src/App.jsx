@@ -761,5 +761,6 @@ export default function App(){
           {NAV.map(n=><button key={n.id} onClick={()=>setTab(n.id)} style={{flex:1,padding:"9px 4px",borderRadius:10,border:"none",cursor:"pointer",fontSize:10,fontWeight:800,background:tab===n.id?W.accent:"transparent",color:tab===n.id?W.bg:W.soft,transition:"all 0.2s"}}><div style={{fontSize:16,marginBottom:2}}>{n.emoji}</div>{n.label}</button>)}
         </div>
       </div>
-    </div>
+   </div>
   );
+}
