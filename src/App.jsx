@@ -340,7 +340,7 @@ function Onboarding({onComplete}){
       <h1 style={{fontSize:42,fontWeight:300,fontFamily:"'Fraunces',serif",fontStyle:"italic",color:W.accent,marginBottom:12,lineHeight:1.1}}>Rich Girl Habits</h1>
       <p style={{fontSize:16,color:W.mid,marginBottom:8,lineHeight:1.6,fontStyle:"italic",fontFamily:"'Fraunces',serif"}}>"Your future self wants you to."</p>
       <p style={{fontSize:13,color:W.soft,marginBottom:48}}>"For when you have more month than money."</p>
-      <button onClick={next} style={btn({fontSize:20,padding:"18px",marginBottom:12})}>Start your saving journey →</button>
+     <div style={{background:"rgba(232,149,106,0.1)",border:"1px solid rgba(232,149,106,0.2)",borderRadius:14,padding:"14px 20px",marginBottom:36,maxWidth:340,margin:"0 auto 36px"}}><p style={{fontSize:15,color:"rgba(253,240,232,0.65)",lineHeight:1.7}}>The free app that takes you from <strong style={{color:"#FDF0E8"}}>frustrated spender</strong> to <strong style={{color:"#E8956A"}}>proud saver</strong> — one habit at a time.</p></div> <button onClick={next} style={btn({fontSize:20,padding:"18px",marginBottom:12})}>Start your saving journey →</button>
       <p style={{fontSize:11,color:W.soft}}>A RetireRicher product</p>
     </div>,
 
